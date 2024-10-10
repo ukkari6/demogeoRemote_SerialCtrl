@@ -19,12 +19,7 @@
 
 import serial
 import time
-import random
 import sys
-
-from pynput import keyboard
-import threading
-
 
 
 
@@ -37,18 +32,6 @@ BUTTONS = {
     'BUTTON_SELECT': 0b00000100,  # button1の2ビット目
     'BUTTON_START': 0b00001000,  # button1の3ビット目
 }
-
-# グローバル変数としてbutton0とbutton1を初期化
-button0 = 0
-button1 = 0
-axis_x = 0x3F #0=左,0x3F=中央,0x7F=右
-axis_y = 0x3F #0=上,0x3F=中央,0x7F=下
-
-
-
-# シリアルポートの設定
-serial_port = '/dev/ttyUSB0'  # 実行環境で変更する
-baud_rate = 115200
 
 
 
@@ -69,8 +52,7 @@ def gen_packet(button0, button1, axis_x, axis_y):
 #BUTTON_D
 #BUTTON_SELECT
 #BUTTON_START
-def set_button_state(button_name, state):
-  global button0, button1
+def set_button_state(button_name, state, button0, button1):
 
   button = BUTTONS.get(button_name)  # ボタンのビットマスクを取得
   if button is None:
@@ -88,12 +70,11 @@ def set_button_state(button_name, state):
     else:
         button1 &= ~button
 
-
+  return button0, button1
 
 
 #軸の状態更新（デジタル）
-def update_axis_state_digital(state):
-    global axis_x, axis_y
+def update_axis_state_digital(state, axis_x, axis_y):
 
     if state == "UP":
         axis_y = 0x00  # 上
@@ -107,6 +88,8 @@ def update_axis_state_digital(state):
         axis_x = 0x3F  # 中央
         axis_y = 0x3F  # 中央
 
+    return axis_x, axis_y
+
 
 
 #シリアルに送信するパケットを生成し、シリアルポートにバイナリデータを書き込む
@@ -117,19 +100,28 @@ def send_data(ser, button0, button1, axis_x, axis_y):
 
 
 
+
 if __name__ == "__main__":
+    # シリアルポートの設定
+    serial_port = '/dev/ttyUSB0'  # 実行環境で変更する
+    baud_rate = 115200
+
+    #デモジオに送るボタン変数
+    button0 = 0
+    button1 = 0
+    axis_x = 0x3F #0=左,0x3F=中央,0x7F=右
+    axis_y = 0x3F #0=上,0x3F=中央,0x7F=下
     with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
 
       while True:
         #ジョイスティックを右に送り続けるサンプルコード
-        #set_button_state("BUTTON_START", "ON") #ボタンの状態を更新
-        #update_axis_state_digital("LEFT")      #ジョイスティックの状態を更新
+        #axis_x, axis_y = update_axis_state_digital("RIGHT", axis_x, axis_y)  #ジョイスティックの状態を更新
+        #button0, button1 = set_button_state("BUTTON_SELECT", "OFF", button0, button1) #ボタンの状態を更新
 
-
-        update_axis_state_digital("RIGHT")
+        button0, button1 = set_button_state("BUTTON_SELECT", "OFF", button0, button1) #ボタンの状態を更新
         send_data(ser, button0, button1, axis_x, axis_y)  #デモジオにボタン状態を送信
         time.sleep(0.1)
 
-        update_axis_state_digital("CNTER")
+        button0, button1 = set_button_state("BUTTON_SELECT", "ON", button0, button1) #ボタンの状態を更新
         send_data(ser, button0, button1, axis_x, axis_y)  #デモジオにボタン状態を送信
         time.sleep(0.5)
