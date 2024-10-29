@@ -118,10 +118,10 @@ if __name__ == "__main__":
         #axis_x, axis_y = update_axis_state_digital("RIGHT", axis_x, axis_y)  #ジョイスティックの状態を更新
         #button0, button1 = set_button_state("BUTTON_SELECT", "OFF", button0, button1) #ボタンの状態を更新
 
-        button0, button1 = set_button_state("BUTTON_SELECT", "OFF", button0, button1) #ボタンの状態を更新
+        axis_x, axis_y = update_axis_state_digital("RIGHT", axis_x, axis_y)  #ジョイスティックの状態を更新
         send_data(ser, button0, button1, axis_x, axis_y)  #デモジオにボタン状態を送信
         time.sleep(0.1)
 
-        button0, button1 = set_button_state("BUTTON_SELECT", "ON", button0, button1) #ボタンの状態を更新
+        axis_x, axis_y = update_axis_state_digital("CENTER", axis_x, axis_y)  #ジョイスティックの状態を更新
         send_data(ser, button0, button1, axis_x, axis_y)  #デモジオにボタン状態を送信
         time.sleep(0.5)
