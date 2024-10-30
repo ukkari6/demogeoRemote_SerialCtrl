@@ -105,12 +105,13 @@ if __name__ == "__main__":
           if event.type == pygame.JOYAXISMOTION:
             axis_x = int((joystick.get_axis(0) + 1.0 ) / 2.0 * 128)
             axis_y = int((joystick.get_axis(1) + 1.0 ) / 2.0 * 128)
+          #ジョイスティックの状態がハット操作に干渉するので削除
           #ハット操作をジョイスティック操作に反映させる
-          elif event.type == pygame.JOYHATMOTION:
-            x, y = joystick.get_hat(0)
-            y = -y  #ハットの上下1と-1がAXISと逆なので反転
-            axis_x = int((x + 1.0 ) / 2.0 * 128)  #ハットの-1,0,1を0,0x3F,0x7Fに変換
-            axis_y = int((y + 1.0 ) / 2.0 * 128)
+          #elif event.type == pygame.JOYHATMOTION:
+          #  x, y = joystick.get_hat(0)
+          #  y = -y  #ハットの上下1と-1がAXISと逆なので反転
+          #  axis_x = int((x + 1.0 ) / 2.0 * 128)  #ハットの-1,0,1を0,0x3F,0x7Fに変換
+          #  axis_y = int((y + 1.0 ) / 2.0 * 128)
 
           #ボタンの状態を更新
           for i, button_name in enumerate(button_names):
