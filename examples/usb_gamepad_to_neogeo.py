@@ -121,5 +121,5 @@ if __name__ == "__main__":
               button0, button1 = set_button_state(button_name, "OFF", button0, button1)
 
           send_data(ser, button0, button1, axis_x, axis_y)  #デモジオにボタン状態を送信
-          pygame.time.wait(5) #フルスピードで動かすとCPUに負担が掛かるためウェイト
+          pygame.time.wait(1) #フルスピードで動かすとCPUに負担が掛かるためウェイト
 
